@@ -1,0 +1,306 @@
+---
+title: "A comparative analysis of the evolution of Coldplay and Metallica Musical bands"
+documentclass: elsarticle
+Thesis_FP: false
+output:
+  pdf_document:
+    keep_tex: true
+    template: Tex/TexDefault.txt
+    fig_width: 3.5
+    fig_height: 3.5
+  pagedown::html_paged: default
+Author1: Katlego Gababonwe
+Ref1: Stellenbosch University, Western Cape
+Email1: 27674193\@sun.ac.za.
+CorrespAuthor_1: false
+BottomRFooter: \footnotesize Page \thepage
+addtoprule: true
+addfootrule: true
+margin: 2.3
+bottom: 2
+top: 2.5
+HardSet_layout: true
+linenumbers: false
+bibliography: Tex/ref.bib
+csl: "Tex/harvard-stellenbosch-university.csl"
+RemovePreprintSubmittedTo: true
+Journal: false
+toc: false
+numbersections: true
+fontsize: 11pt
+linestretch: 1.2
+link-citations: true
+AddTitle: true
+abstract: "This report examines the musical evolution of Coldplay and Metallica over
+  two decades, using Spotify data to compare their studio recordings. Key attributes
+  like tempo, energy, and danceability are analysed, highlighting Coldplay's moderate
+  tempo against Metallica's high-energy style.\n"
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+
+list.files("C:/Users/Katli Gabs/Documents/Data Science/27674193/27674193/Question2/Question2/code/Question2_Plots.R", full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+coldplay_data <- read.csv("C:/Users/Katli Gabs/Documents/Data Science/27674193/27674193/Question2/Question2/data/Coldplay_vs_Metallica/Coldplay.csv")
+metallica_data <- read.csv("C:/Users/Katli Gabs/Documents/Data Science/27674193/27674193/Question2/Question2/data/Coldplay_vs_Metallica/metallica.csv")
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+Coldplay and Metallica have made significant marks in music, and their music direction is unique. Both bands have built extensive collections that show shifts in style, artistic development, and loyal fan support over decades. This report uses Spotify data to study their musical paths through studio recordings, comparing their evolution with broader music industry trends. By analyzing tempo, energy, danceability, and themes, the aim is to assess how Coldplay and Metallica have managed to stay resilient over time, impacting modern music culture profoundly.
+
+\newpage
+# Comparison of Tempo between Coldplay and Metallica \label{Comparison of Tempo between Coldplay and Metallica}
+
+The boxplot  comparison of tempo between Coldplay and Metallica reveals distinct differences in their musical styles. Coldplay's tempo range is generally lower and more consistent, indicating a preference for moderate tempos that evoke calm and reflective moods. In contrast, Metallica exhibits a wider tempo range with higher median values around 140 BPM, reflecting their inclination towards faster, more energetic music typical of the heavy metal genre. These differences suggest that Coldplay's music likely evokes relaxed and contemplative responses, while Metallica's faster tempos aim to energize and excite listeners.
+
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = " Comparison of Tempo between Coldplay and Metallica.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 7}
+
+  # Source the plot with a function, and then print it as below.
+    # Going through the function, you will note that I'm able to source other functions in the code folder in these functions too.
+# That's the beauty of centralizing your functions and loading it in the top.
+# Check column names and ensure consistency with Definitions.txt
+
+# Filter out non-studio recordings based on song names
+clean_coldplay <- coldplay_data %>%
+  filter(!grepl(" live", name , ignore.case = TRUE))  # Adjust based on actual column names
+
+clean_metallica <- metallica_data %>%
+  filter(!str_detect( name , regex("live", ignore_case = TRUE)))
+
+#Feature Extraction
+#Extract relevant features or metrics for comparison. This could include audio features like tempo, danceability, energy, etc., provided by Spotify API.
+
+
+# Example: Extract audio features (adjust based on available columns)
+
+coldplay_features <- clean_coldplay %>%
+  select(name, tempo, danceability, energy)
+
+metallica_features <- clean_metallica %>%
+  select(name , tempo, danceability, energy)
+
+
+# Combine data for plotting (example)
+
+# Combine data for plotting (example)
+combined_df<- bind_rows(
+  mutate(coldplay_features, Band = "Coldplay"),
+  mutate(metallica_features, Band = "Metallica")
+)
+
+# Example Plot: Comparison of Tempo between Coldplay and Metallica
+
+g_tempo <- ggplot(combined_df, aes(x = Band, y = tempo, fill = Band)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Tempo between Coldplay and Metallica",
+       x = "Band",
+       y = "Tempo") +
+  theme_minimal()
+g_tempo
+###tempo comparison graph works fine
+```
+
+\newpage
+#Tempo vs. Danceability by band \label{Tempo vs. Danceability}
+
+The scatter plot of danceability by band indicates that Metallica has a higher danceability for most songs compared to Coldplay, with some songs having a danceability score above 0.7. Danceability is often associated with temporability, as faster and more energetic music is associated with movement and dance. Danceability boosts audience connection and engagement.
+
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = " Tempo vs. Danceability by band.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 7}
+
+  # Filter out non-studio recordings based on song names
+clean_coldplay <- coldplay_data %>%
+  filter(!grepl(" live", name , ignore.case = TRUE))  # Adjust based on actual column names
+
+clean_metallica <- metallica_data %>%
+  filter(!str_detect( name , regex("live", ignore_case = TRUE)))
+
+#Feature Extraction
+#Extract relevant features or metrics for comparison. This could include audio features like tempo, danceability, energy, etc., provided by Spotify API.
+
+
+# Example: Extract audio features (adjust based on available columns)
+
+coldplay_features <- clean_coldplay %>%
+  select(name, tempo, danceability, energy)
+
+metallica_features <- clean_metallica %>%
+  select(name , tempo, danceability, energy)
+
+
+# Combine data for plotting (example)
+
+# Combine data for plotting (example)
+combined_df<- bind_rows(
+  mutate(coldplay_features, Band = "Coldplay"),
+  mutate(metallica_features, Band = "Metallica")
+)
+
+# Example Plot: Comparison of Tempo between Coldplay and Metallica
+
+g_tempo <- ggplot(combined_df, aes(x = Band, y = tempo, fill = Band)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Tempo between Coldplay and Metallica",
+       x = "Band",
+       y = "Tempo") +
+  theme_minimal()
+###tempo comparison graph works fine 
+
+
+coldplay_df <- data.frame(coldplay_data)
+
+metallica_df <- data.frame(metallica_data)
+
+gscatter <- ggplot(combined_df, aes(x = tempo, y = danceability, color = Band)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Tempo vs. Danceability",
+       x = "Tempo",
+       y = "Danceability",
+       color = "Band") +
+  theme_minimal()
+
+gscatter
+```
+
+\newpage
+#Density of Danceability by Band \label{Density of Danceability by Band}
+
+The density function shown below backs up the analysis of the scatter plot. The metallica density plot is skewed, which means that more songs are likely to be more danceable, which suggests that higher energy levels are being added to the tracks. The density function of coldplay, on the other hand, is more normally distributed, reflecting a balanced spread of danceability. This suggests diversity and consistency in creating accessible music to engage the listeners.
+
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = " Density of Danceability by Band.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 7}
+
+  # Filter out non-studio recordings based on song names
+clean_coldplay <- coldplay_data %>%
+  filter(!grepl(" live", name , ignore.case = TRUE))  # Adjust based on actual column names
+
+clean_metallica <- metallica_data %>%
+  filter(!str_detect( name , regex("live", ignore_case = TRUE)))
+
+#Feature Extraction
+#Extract relevant features or metrics for comparison. This could include audio features like tempo, danceability, energy, etc., provided by Spotify API.
+
+
+# Example: Extract audio features (adjust based on available columns)
+
+coldplay_features <- clean_coldplay %>%
+  select(name, tempo, danceability, energy)
+
+metallica_features <- clean_metallica %>%
+  select(name , tempo, danceability, energy)
+
+
+# Combine data for plotting (example)
+
+# Combine data for plotting (example)
+combined_df<- bind_rows(
+  mutate(coldplay_features, Band = "Coldplay"),
+  mutate(metallica_features, Band = "Metallica")
+)
+
+# Example Plot: Comparison of Tempo between Coldplay and Metallica
+
+g_tempo <- ggplot(combined_df, aes(x = Band, y = tempo, fill = Band)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Tempo between Coldplay and Metallica",
+       x = "Band",
+       y = "Tempo") +
+  theme_minimal()
+###tempo comparison graph works fine 
+
+
+coldplay_df <- data.frame(coldplay_data)
+
+metallica_df <- data.frame(metallica_data)
+
+# Density plot of Danceability by Band
+
+gdens <- ggplot(combined_df, aes(x = danceability, fill = Band)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density of Danceability by Band",
+       x = "Danceability",
+       fill = "Band") +
+  theme_minimal()
+gdens
+
+```
+
+\newpage
+#Energy Distribution by Band \label{Energy Distribution by Band}
+
+The box plot reflects Metallica's high energy levels; high tails indicate outliers with exceptionally intense songs. A lifted median line suggests Metallica consistently produces songs with high energy, reflecting their dynamic musical style. The narrow box indicates minimal variability in energy levels. These characteristics underscore Metallica's signature style of delivering powerful and energetic musical compositions across their extensive catalog. The Coldplay box plot has relatively low tails and a lower median line, indicating that songs of varied energy levels and more balanced levels are produced.
+
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = " Energy Distribution by Band.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 7}
+
+  # Filter out non-studio recordings based on song names
+clean_coldplay <- coldplay_data %>%
+  filter(!grepl(" live", name , ignore.case = TRUE))  # Adjust based on actual column names
+
+clean_metallica <- metallica_data %>%
+  filter(!str_detect( name , regex("live", ignore_case = TRUE)))
+
+#Feature Extraction
+#Extract relevant features or metrics for comparison. This could include audio features like tempo, danceability, energy, etc., provided by Spotify API.
+
+
+# Example: Extract audio features (adjust based on available columns)
+
+coldplay_features <- clean_coldplay %>%
+  select(name, tempo, danceability, energy)
+
+metallica_features <- clean_metallica %>%
+  select(name , tempo, danceability, energy)
+
+
+# Combine data for plotting (example)
+
+# Combine data for plotting (example)
+combined_df<- bind_rows(
+  mutate(coldplay_features, Band = "Coldplay"),
+  mutate(metallica_features, Band = "Metallica")
+)
+
+# Example Plot: Comparison of Tempo between Coldplay and Metallica
+
+g_tempo <- ggplot(combined_df, aes(x = Band, y = tempo, fill = Band)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Tempo between Coldplay and Metallica",
+       x = "Band",
+       y = "Tempo") +
+  theme_minimal()
+###tempo comparison graph works fine 
+
+
+coldplay_df <- data.frame(coldplay_data)
+
+metallica_df <- data.frame(metallica_data)
+
+# Boxplot of Energy by Band
+
+gbox <- ggplot(combined_df, aes(x = Band, y = energy, fill = Band)) +
+  geom_boxplot() +
+  labs(title = "Energy Distribution by Band",
+       x = "Band",
+       y = "Energy",
+       fill = "Band") +
+  theme_minimal()
+
+gbox 
+```
+# Conclusion\label{Conclusion}
+Metallica's high energy, danceability, and tempo resonates strongly with the younger generation, reflecting their preference for dynamic and intense musical experiences. In contrast, Coldplay's more subtle and relaxed musical features appeal to the older generation, who may appreciate their melodic and introspective approach to songwriting. These distinctions highlight how musical preferences can vary across generations based on stylistic and thematic preferences in music.
+
+
